@@ -1,14 +1,24 @@
-# TaskDaemon Sample
+# TaskDaemon Example
 
-A Rust HTTP API submits prime-number jobs to [TaskDaemon](https://hub.docker.com/r/mshelia/taskdaemon). Four persistent C++ handler containers execute them using the [TaskDaemon C++ SDK](https://github.com/jona62/TaskDaemon-Handlers).
+Demo of TaskDaemon running prime-number jobs through a Rust API and C++ handlers
 
-## Quick Start
+## What it is
 
-Docker must be running. This sample gives TaskDaemon access to the host Docker socket so it can launch handler containers.
+A Rust HTTP API submits prime-number jobs to [TaskDaemon](https://hub.docker.com/r/mshelia/taskdaemon). Four persistent C++ handler containers execute them using the [TaskDaemon C++ SDK](https://github.com/jona62/taskdaemon-sdks).
+
+## Stack
+
+Rust (axum, tokio, reqwest) API, C++ handlers built on the SDK header `taskdaemon.hpp`, Python 3 checker and tests, Bash scripts, Docker Compose, GitHub Actions CI, and an optional Prometheus/Grafana profile.
+
+## Run it
+
+Docker must be running.
+
+Security note: this example mounts the host Docker socket (`/var/run/docker.sock`) into the TaskDaemon container so it can launch handler containers. That grants root-equivalent access to the host Docker daemon, so run it only on a machine you trust. The monitoring profile also uses the default Grafana login `admin` / `admin`; ports are bound to loopback only.
 
 ```bash
-git clone https://github.com/jona62/TaskDaemon-Sample.git
-cd TaskDaemon-Sample
+git clone https://github.com/jona62/taskdaemon-example.git
+cd taskdaemon-example
 docker compose up --build
 ```
 
@@ -31,11 +41,11 @@ Services are published on loopback:
 
 If a port is occupied, set `SAMPLE_API_PORT`, `TASKDAEMON_HTTP_PORT`, or `TASKDAEMON_GRPC_PORT` before starting Compose. Containers continue to use ports 8081, 8080, and 50051 internally.
 
-To build the daemon from the pinned source submodule instead, you need GitHub access to the private TaskDaemon repository:
+To build the daemon from the pinned source submodule instead, you need GitHub access to the private taskdaemon repository:
 
 ```bash
-git clone --recurse-submodules https://github.com/jona62/TaskDaemon-Sample.git
-cd TaskDaemon-Sample
+git clone --recurse-submodules https://github.com/jona62/taskdaemon-example.git
+cd taskdaemon-example
 docker compose -f docker-compose.local.yml up --build
 ```
 
@@ -137,3 +147,7 @@ docker compose --profile monitoring up --build
 ```
 
 Prometheus is available at http://localhost:9090 and Grafana at http://localhost:3001. The local Grafana login is `admin` / `admin`.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
